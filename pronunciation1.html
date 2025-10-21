@@ -1,0 +1,1391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cyberpunk Pronunciation Trainer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg-dark: #0a0e27;
+      --bg-darker: #050811;
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff006e;
+      --neon-purple: #8b5cf6;
+      --neon-blue: #3b82f6;
+      --neon-green: #10b981;
+      --text-primary: #e0e7ff;
+      --text-secondary: #94a3b8;
+      --glass-bg: rgba(15, 23, 42, 0.7);
+      --glass-border: rgba(148, 163, 184, 0.1);
+    }
+
+    body {
+      background: var(--bg-darker);
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 20s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    /* Glowing orbs background */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: var(--neon-cyan);
+      top: -100px;
+      left: -100px;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 300px;
+      height: 300px;
+      background: var(--neon-pink);
+      bottom: -50px;
+      right: -50px;
+      animation-delay: 7s;
+    }
+
+    .orb-3 {
+      width: 350px;
+      height: 350px;
+      background: var(--neon-purple);
+      top: 50%;
+      left: 50%;
+      animation-delay: 14s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, -50px) scale(1.1); }
+      66% { transform: translate(-50px, 100px) scale(0.9); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: slideDown 0.8s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 20px rgba(0, 240, 255, 0.5)); }
+      50% { filter: brightness(1.2) drop-shadow(0 0 30px rgba(0, 240, 255, 0.8)); }
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Mode selector */
+    .mode-selector {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .mode-btn {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--glass-border);
+      border-radius: 15px;
+      padding: 15px 30px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(0, 240, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .mode-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .mode-btn:hover {
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.3);
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2));
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.1);
+    }
+
+    /* Main content - centered layout */
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto 40px;
+      animation: fadeIn 1s ease-out 0.5s both;
+    }
+
+    /* Glass panel */
+    .panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .panel:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 240, 255, 0.2);
+    }
+
+    /* Display box */
+    .display-box {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(139, 92, 246, 0.05));
+      border: 2px solid rgba(0, 240, 255, 0.2);
+      border-radius: 20px;
+      padding: 50px 30px;
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .display-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .display-word {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.8);
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .display-sub {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 18px 25px;
+      border: none;
+      border-radius: 15px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .control-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .control-btn:active::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-play {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+      color: white;
+      box-shadow: 0 5px 25px rgba(0, 240, 255, 0.4);
+    }
+
+    .btn-play:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px rgba(0, 240, 255, 0.6);
+    }
+
+    .btn-record {
+      background: linear-gradient(135deg, var(--neon-pink), #ff4d94);
+      color: white;
+      box-shadow: 0 5px 25px rgba(255, 0, 110, 0.4);
+    }
+
+    .btn-record:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px rgba(255, 0, 110, 0.6);
+    }
+
+    .btn-record.recording {
+      animation: recordPulse 1s ease-in-out infinite;
+      position: relative;
+    }
+
+    .btn-record.recording::before {
+      content: 'Åú';
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ff0000;
+      font-size: 1.5rem;
+      animation: blink 1s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes recordPulse {
+      0%, 100% { box-shadow: 0 5px 25px rgba(255, 0, 110, 0.4); }
+      50% { box-shadow: 0 5px 40px rgba(255, 0, 110, 0.8), 0 0 60px rgba(255, 0, 110, 0.6); }
+    }
+
+    .btn-playback {
+      background: linear-gradient(135deg, var(--neon-green), #059669);
+      color: white;
+      box-shadow: 0 5px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-playback:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px rgba(16, 185, 129, 0.6);
+    }
+
+    .btn-next {
+      background: var(--glass-bg);
+      border: 2px solid var(--neon-purple);
+      color: var(--neon-purple);
+      box-shadow: 0 5px 25px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-next:hover {
+      background: rgba(139, 92, 246, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px rgba(139, 92, 246, 0.5);
+    }
+
+    /* Score display */
+    .score-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 25px;
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(139, 92, 246, 0.1));
+      border: 2px solid var(--neon-cyan);
+      border-radius: 15px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    }
+
+    .score-number {
+      font-size: 1.8rem;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+    }
+
+    /* Recording visualizer */
+    .recording-viz {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 15px;
+      margin-top: 10px;
+      background: linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(255, 77, 148, 0.1));
+      border: 2px solid var(--neon-pink);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+    }
+
+    .recording-viz.active {
+      display: flex;
+    }
+
+    .viz-bar {
+      width: 6px;
+      background: linear-gradient(180deg, var(--neon-pink), var(--neon-cyan));
+      border-radius: 3px;
+      animation: vizPulse 0.6s ease-in-out infinite;
+    }
+
+    .viz-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+    .viz-bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+    .viz-bar:nth-child(3) { height: 50px; animation-delay: 0.2s; }
+    .viz-bar:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+    .viz-bar:nth-child(5) { height: 55px; animation-delay: 0.4s; }
+    .viz-bar:nth-child(6) { height: 35px; animation-delay: 0.5s; }
+    .viz-bar:nth-child(7) { height: 45px; animation-delay: 0.6s; }
+    .viz-bar:nth-child(8) { height: 30px; animation-delay: 0.7s; }
+    .viz-bar:nth-child(9) { height: 40px; animation-delay: 0.8s; }
+    .viz-bar:nth-child(10) { height: 25px; animation-delay: 0.9s; }
+
+    @keyframes vizPulse {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    /* Feedback */
+    .feedback {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+      border: 1px solid var(--glass-border);
+      border-left: 4px solid var(--neon-cyan);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      min-height: 80px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .feedback-title {
+      font-weight: 700;
+      color: var(--neon-cyan);
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    /* Settings row */
+    .settings-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .accent-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+    }
+
+    .accent-selector select {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .accent-selector select option {
+      background: var(--bg-darker);
+    }
+
+    .hint {
+      flex: 1;
+      text-align: right;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Content library grid - 3 columns */
+    .content-library {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      animation: fadeIn 1s ease-out 0.7s both;
+    }
+
+    .library-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .library-section.active {
+      display: block;
+    }
+
+    .library-section:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(0, 240, 255, 0.2);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--glass-border);
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-count {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      background: rgba(0, 240, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+
+    .list-container {
+      max-height: 500px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--neon-cyan) transparent;
+      padding-right: 5px;
+    }
+
+    .list-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .list-container::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+    }
+
+    .list-container::-webkit-scrollbar-thumb {
+      background: var(--neon-cyan);
+      border-radius: 3px;
+    }
+
+    .list-item {
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 240, 255, 0.1);
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .list-item:hover {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--neon-cyan);
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.3);
+    }
+
+    .list-item.active {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(139, 92, 246, 0.15));
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    }
+
+    .item-text {
+      flex: 1;
+      color: var(--text-primary);
+    }
+
+    .item-number {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-left: 10px;
+    }
+
+    /* Progress section */
+    .progress-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .progress-header {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .progress-container {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      height: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: progressShine 2s ease-in-out infinite;
+    }
+
+    @keyframes progressShine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .content-library {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .logo {
+        font-size: 2.5rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+      }
+      
+      .control-btn {
+        width: 100%;
+      }
+      
+      .settings-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .hint {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="container">
+    <div class="header">
+      <h1 class="logo">?? Pronunciation Trainer</h1>
+      <p class="subtitle">Advanced English Practice System</p>
+    </div>
+
+    <div class="mode-selector">
+      <button class="mode-btn active" data-mode="words">?? Word Practice</button>
+      <button class="mode-btn" data-mode="pairs">?? Minimal Pairs</button>
+      <button class="mode-btn" data-mode="sentences">??? Sentence Shadowing</button>
+    </div>
+
+    <div class="main-content">
+      <div class="panel">
+        <div class="display-box">
+          <div class="display-word" id="displayMain">Ready?</div>
+          <div class="display-sub" id="displaySub">Choose a mode and press Play</div>
+        </div>
+
+        <div class="controls">
+          <button class="control-btn btn-play" id="playBtn">?? Play Target</button>
+          <button class="control-btn btn-record" id="recBtn">?? Record</button>
+          <button class="control-btn btn-playback" id="playbackBtn" disabled>?? Play Back</button>
+          <button class="control-btn btn-next" id="nextBtn">? Next</button>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <button class="control-btn" id="testMicBtn" style="width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706); padding: 12px;">
+            ?? Test Microphone Access
+          </button>
+        </div>
+
+        <div class="recording-viz" id="recordingViz">
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+          <div class="viz-bar"></div>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <div class="feedback-title">Ready to Begin</div>
+          Press "Play Target" to hear the pronunciation, then "Record" to practice. Play back your recording to compare!
+        </div>
+
+        <div class="settings-row">
+          <div class="accent-selector">
+            <span>?? Accent:</span>
+            <select id="accentSelect">
+              <option value="en-US">American (US)</option>
+              <option value="en-GB">British (UK)</option>
+            </select>
+          </div>
+          <div class="hint">?? No API needed ? All audio stored in RAM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-library">
+      <div class="library-section active" id="wordsSection">
+        <div class="section-header">
+          <div class="section-title">?? Words</div>
+          <div class="section-count">40</div>
+        </div>
+        <div class="list-container" id="wordList"></div>
+      </div>
+
+      <div class="library-section" id="pairsSection">
+        <div class="section-header">
+          <div class="section-title">?? Minimal Pairs</div>
+          <div class="section-count">16</div>
+        </div>
+        <div class="list-container" id="pairList"></div>
+      </div>
+
+      <div class="library-section" id="sentencesSection">
+        <div class="section-header">
+          <div class="section-title">?? Sentences</div>
+          <div class="section-count">18</div>
+        </div>
+        <div class="list-container" id="sentList"></div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-header">?? Session Progress</div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progBar" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Content libraries
+    const WORDS = [
+      'rabbit','rice','lice','light','right','glass','grass','berry','very','vase','vest','best','vote','boat','fan','fun','cat','cap','cup','cupboard','dog','dock','map','march','egg','edge','ship','sheep','bit','beat','sit','seat','think','sink','this','dis','bath','baths','culture','collar'
+    ];
+
+    const PAIRS = [
+      ['rice','lice'],['light','right'],['berry','very'],['vest','best'],['vote','boat'],['fan','fun'],['ship','sheep'],['bit','beat'],
+      ['cap','cup'],['cat','cap'],['dog','dock'],['think','sink'],['this','dis'],['bath','baths'],['glass','grass'],['collar','culture']
+    ];
+
+    const SENTENCES = [
+      'She went to the store yesterday.',
+      'He bought a red car.',
+      'I really like your voice.',
+      'They live near the river.',
+      'This is the best coffee ever.',
+      'Think before you speak.',
+      'The light in this room is bright.',
+      'He\'s very busy today.',
+      'We\'ll meet again soon.',
+      'Please close the door behind you.',
+      'I can\'t hear the difference.',
+      'She has three thin things.',
+      'The cat sat on the mat.',
+      'Can you repeat that slowly?',
+      'I visited the museum last week.',
+      'My friend loves to listen to music.',
+      'They are looking for the correct answer.',
+      'He reads books every evening.'
+    ];
+
+    // UI elements
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const displayMain = document.getElementById('displayMain');
+    const displaySub = document.getElementById('displaySub');
+    const playBtn = document.getElementById('playBtn');
+    const recBtn = document.getElementById('recBtn');
+    const playbackBtn = document.getElementById('playbackBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const feedback = document.getElementById('feedback');
+    const progBar = document.getElementById('progBar');
+    const accentSelect = document.getElementById('accentSelect');
+    const recordingViz = document.getElementById('recordingViz');
+    const testMicBtn = document.getElementById('testMicBtn');
+
+    let state = {
+      mode: 'words',
+      index: 0,
+      currentText: '',
+      manualSelection: false,
+      isRecording: false,
+      recordedAudio: null,
+      mediaRecorder: null,
+      audioChunks: [],
+      mediaStream: null
+    };
+
+    // Populate lists with click handlers
+    function createList(container, items, isPair, mode) {
+      container.innerHTML = '';
+      items.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.dataset.index = i;
+        div.innerHTML = `
+          <span class="item-text">${isPair ? `${item[0]} / ${item[1]}` : item}</span>
+          <span class="item-number">#${i + 1}</span>
+        `;
+        
+        div.addEventListener('click', () => {
+          if (state.mode !== mode) {
+            state.mode = mode;
+            modeButtons.forEach(btn => {
+              btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+          }
+          
+          state.index = i;
+          state.manualSelection = true;
+          updateDisplay();
+          updateLibraryVisibility();
+          highlightActiveItems();
+          
+          setTimeout(() => {
+            if (state.mode === 'pairs') {
+              const pair = PAIRS[state.index % PAIRS.length];
+              state.currentText = pair[Math.floor(Math.random() * 2)];
+            }
+            speak(state.currentText);
+            showFeedback('Selected', `Now practicing: "${state.currentText}". Press Record when ready.`);
+          }, 100);
+        });
+        
+        container.appendChild(div);
+      });
+    }
+
+    const wordListEl = document.getElementById('wordList');
+    const pairListEl = document.getElementById('pairList');
+    const sentListEl = document.getElementById('sentList');
+
+    createList(wordListEl, WORDS, false, 'words');
+    createList(pairListEl, PAIRS, true, 'pairs');
+    createList(sentListEl, SENTENCES, false, 'sentences');
+
+    // Highlight active items in lists
+    function highlightActiveItems() {
+      document.querySelectorAll('.list-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      let listEl;
+      if (state.mode === 'words') listEl = wordListEl;
+      else if (state.mode === 'pairs') listEl = pairListEl;
+      else listEl = sentListEl;
+      
+      const items = listEl.querySelectorAll('.list-item');
+      const currentIndex = state.index % items.length;
+      if (items[currentIndex]) {
+        items[currentIndex].classList.add('active');
+        const listContainer = items[currentIndex].closest('.list-container');
+        if (listContainer) {
+          const itemTop = items[currentIndex].offsetTop;
+          const itemHeight = items[currentIndex].offsetHeight;
+          const containerScrollTop = listContainer.scrollTop;
+          const containerHeight = listContainer.clientHeight;
+          
+          if (itemTop < containerScrollTop) {
+            listContainer.scrollTop = itemTop - 10;
+          } else if (itemTop + itemHeight > containerScrollTop + containerHeight) {
+            listContainer.scrollTop = itemTop + itemHeight - containerHeight + 10;
+          }
+        }
+      }
+    }
+
+    // Update content library visibility
+    function updateLibraryVisibility() {
+      const wordsSection = document.getElementById('wordsSection');
+      const pairsSection = document.getElementById('pairsSection');
+      const sentencesSection = document.getElementById('sentencesSection');
+      
+      wordsSection.classList.remove('active');
+      pairsSection.classList.remove('active');
+      sentencesSection.classList.remove('active');
+      
+      if (state.mode === 'words') {
+        wordsSection.classList.add('active');
+      } else if (state.mode === 'pairs') {
+        pairsSection.classList.add('active');
+      } else if (state.mode === 'sentences') {
+        sentencesSection.classList.add('active');
+      }
+    }
+
+    // Mode switching
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        modeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.mode = btn.dataset.mode;
+        state.index = 0;
+        state.manualSelection = false;
+        updateDisplay();
+        updateLibraryVisibility();
+        highlightActiveItems();
+      });
+    });
+
+    function updateDisplay() {
+      if (state.mode === 'words') {
+        const word = WORDS[state.index % WORDS.length];
+        displayMain.textContent = word;
+        displaySub.textContent = 'Press "Play Target" to hear pronunciation';
+        state.currentText = word;
+      } else if (state.mode === 'pairs') {
+        const pair = PAIRS[state.index % PAIRS.length];
+        displayMain.textContent = `${pair[0]}  /  ${pair[1]}`;
+        displaySub.textContent = 'Listen carefully to distinguish the sounds';
+        state.currentText = pair[Math.floor(Math.random() * 2)];
+      } else {
+        const sentence = SENTENCES[state.index % SENTENCES.length];
+        displayMain.textContent = sentence;
+        displaySub.textContent = 'Shadow the complete sentence';
+        state.currentText = sentence;
+      }
+      updateProgress();
+      if (!state.manualSelection) {
+        showFeedback('Ready', 'Press "Play Target" to hear the pronunciation.');
+      }
+      highlightActiveItems();
+      
+      // Clear recorded audio when changing items
+      state.recordedAudio = null;
+      playbackBtn.disabled = true;
+    }
+
+    function updateProgress() {
+      const total = state.mode === 'words' ? WORDS.length : 
+                    state.mode === 'pairs' ? PAIRS.length : SENTENCES.length;
+      const percent = Math.round(((state.index % total) + 1) / total * 100);
+      progBar.style.width = percent + '%';
+    }
+
+    updateDisplay();
+    updateLibraryVisibility();
+
+    // Speech synthesis
+    function speak(text) {
+      if (!('speechSynthesis' in window)) {
+        showFeedback('Error', 'Speech synthesis not supported in this browser.');
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = accentSelect.value || 'en-US';
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (state.mode === 'pairs') {
+        const pair = PAIRS[state.index % PAIRS.length];
+        state.currentText = pair[Math.floor(Math.random() * 2)];
+      }
+      speak(state.currentText);
+      showFeedback('Playing Target', `?? Listening to: "${state.currentText}"`);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      state.index++;
+      state.manualSelection = false;
+      updateDisplay();
+    });
+
+    // Microphone test function
+    testMicBtn.addEventListener('click', async () => {
+      showFeedback('Testing...', '?? Running microphone diagnostics...');
+      
+      let diagnostics = '<strong>Microphone Diagnostic Results:</strong><br><br>';
+      
+      // Test 1: Check if APIs exist
+      diagnostics += '1?? <strong>MediaDevices API:</strong> ';
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        diagnostics += '? Available<br>';
+      } else {
+        diagnostics += '? NOT AVAILABLE - Browser not supported<br>';
+        showFeedback('Diagnostic Results', diagnostics);
+        return;
+      }
+      
+      // Test 2: Check permissions API
+      diagnostics += '2?? <strong>Checking permissions:</strong> ';
+      try {
+        if (navigator.permissions && navigator.permissions.query) {
+          const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+          diagnostics += `${permissionStatus.state}<br>`;
+          if (permissionStatus.state === 'denied') {
+            diagnostics += '   ?? Permission is DENIED at browser level<br>';
+          }
+        } else {
+          diagnostics += 'Unable to check<br>';
+        }
+      } catch (e) {
+        diagnostics += 'Unable to check<br>';
+      }
+      
+      // Test 3: List audio devices
+      diagnostics += '3?? <strong>Available audio devices:</strong><br>';
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputs = devices.filter(device => device.kind === 'audioinput');
+        
+        if (audioInputs.length === 0) {
+          diagnostics += '   ? NO MICROPHONES DETECTED<br>';
+        } else {
+          diagnostics += `   ? Found ${audioInputs.length} microphone(s):<br>`;
+          audioInputs.forEach((device, i) => {
+            diagnostics += `   ? ${device.label || 'Microphone ' + (i + 1)}<br>`;
+          });
+        }
+      } catch (e) {
+        diagnostics += '   ? Error listing devices: ' + e.message + '<br>';
+      }
+      
+      // Test 4: Try to access microphone
+      diagnostics += '4?? <strong>Attempting microphone access:</strong><br>';
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        diagnostics += '   ? SUCCESS! Microphone access granted<br>';
+        diagnostics += '   <strong style="color: #10b981;">Your microphone is working!</strong><br><br>';
+        diagnostics += '   <em>If recording still fails, try:</em><br>';
+        diagnostics += '   ? Restarting your browser completely<br>';
+        diagnostics += '   ? Using Chrome Incognito mode<br>';
+        diagnostics += '   ? Checking if antivirus software is blocking microphone<br>';
+        
+        // Stop the test stream
+        stream.getTracks().forEach(track => track.stop());
+      } catch (error) {
+        diagnostics += '   ? FAILED: ' + error.name + '<br>';
+        diagnostics += '   Message: ' + error.message + '<br><br>';
+        
+        if (error.name === 'NotAllowedError') {
+          diagnostics += '   <strong>This is the problem!</strong><br>';
+          diagnostics += '   <strong style="color: #ef4444;">Possible causes:</strong><br>';
+          diagnostics += '   ? Windows Privacy Settings blocking Chrome/Edge<br>';
+          diagnostics += '   ? Browser security policy<br>';
+          diagnostics += '   ? Enterprise/school IT restrictions<br>';
+          diagnostics += '   ? Antivirus software blocking microphone<br><br>';
+          diagnostics += '   <strong>Try this:</strong><br>';
+          diagnostics += '   1. Type "chrome://settings/content/microphone" in address bar<br>';
+          diagnostics += '   2. Check if this site is in "Not allowed" list<br>';
+          diagnostics += '   3. Move it to "Allowed" if it is<br>';
+        } else if (error.name === 'NotFoundError') {
+          diagnostics += '   <strong>No microphone hardware detected</strong><br>';
+          diagnostics += '   Check Windows Sound Settings<br>';
+        }
+      }
+      
+      // Test 5: Browser info
+      diagnostics += '<br>5?? <strong>Browser info:</strong><br>';
+      diagnostics += '   ' + navigator.userAgent.substring(0, 80) + '...<br>';
+      
+      showFeedback('Diagnostic Complete', diagnostics);
+    });
+
+    // Audio Recording with MediaRecorder API
+    async function startRecording() {
+      try {
+        showFeedback('Starting...', '?? Checking microphone access...');
+        
+        // Check if mediaDevices is supported
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error('MediaDevices API not supported in this browser');
+        }
+        
+        showFeedback('Starting...', '?? Requesting microphone permission...');
+        
+        // Request microphone access
+        state.mediaStream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
+        
+        showFeedback('Starting...', '? Microphone access granted! Creating recorder...');
+        
+        // Check if MediaRecorder is supported
+        if (!window.MediaRecorder) {
+          throw new Error('MediaRecorder not supported in this browser');
+        }
+        
+        // Create MediaRecorder
+        state.mediaRecorder = new MediaRecorder(state.mediaStream);
+        state.audioChunks = [];
+        
+        state.mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            state.audioChunks.push(event.data);
+          }
+        };
+        
+        state.mediaRecorder.onstop = () => {
+          // Create blob from recorded chunks (stored in RAM)
+          const audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+          state.recordedAudio = URL.createObjectURL(audioBlob);
+          
+          // Enable playback button
+          playbackBtn.disabled = false;
+          
+          showFeedback('Recording Complete', '? Recording saved! Press "Play Back" to hear yourself, or "Record" to try again.');
+          
+          // Stop visualization
+          recordingViz.classList.remove('active');
+          recBtn.classList.remove('recording');
+          recBtn.textContent = '?? Record';
+          
+          // Clean up stream
+          if (state.mediaStream) {
+            state.mediaStream.getTracks().forEach(track => track.stop());
+            state.mediaStream = null;
+          }
+        };
+        
+        state.mediaRecorder.onerror = (event) => {
+          console.error('MediaRecorder error:', event);
+          showFeedback('Recording Error', '? Error during recording: ' + (event.error ? event.error.name : 'Unknown error'));
+          cleanupRecording();
+        };
+        
+        // Start recording
+        showFeedback('Starting...', '?? Starting recorder...');
+        state.mediaRecorder.start();
+        state.isRecording = true;
+        recBtn.classList.add('recording');
+        recBtn.textContent = '?? Stop Recording';
+        recordingViz.classList.add('active');
+        
+        showFeedback('Recording...', '?? Recording active! Speak now...');
+        
+        // Auto-stop after 10 seconds
+        setTimeout(() => {
+          if (state.isRecording) {
+            stopRecording();
+          }
+        }, 10000);
+        
+      } catch (error) {
+        console.error('Recording error:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        
+        let errorMsg = '? Could not access microphone.<br><br>';
+        
+        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+          errorMsg += '<strong>Permission Denied</strong><br>';
+          errorMsg += 'Even though you may have allowed access, something is blocking it.<br><br>';
+          errorMsg += '<strong>Try these steps:</strong><br>';
+          errorMsg += '1. Check Windows Privacy Settings:<br>';
+          errorMsg += '   ? Settings Å® Privacy & Security Å® Microphone<br>';
+          errorMsg += '   ? Make sure "Microphone access" is ON<br>';
+          errorMsg += '   ? Make sure Chrome/Edge can access microphone<br><br>';
+          errorMsg += '2. In your browser address bar, click the ?? icon<br>';
+          errorMsg += '3. Find "Microphone" and set to "Allow"<br>';
+          errorMsg += '4. Reload this page (F5)<br><br>';
+          errorMsg += '<small>Error: ' + error.name + '</small>';
+        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+          errorMsg += '<strong>No Microphone Detected</strong><br>';
+          errorMsg += '? Check Device Manager (Windows key + X Å® Device Manager)<br>';
+          errorMsg += '? Look for "Audio inputs and outputs"<br>';
+          errorMsg += '? Make sure microphone is listed and enabled<br>';
+          errorMsg += '? Try: Settings Å® System Å® Sound Å® Input Å® Test your microphone<br><br>';
+          errorMsg += '<small>Error: ' + error.name + '</small>';
+        } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+          errorMsg += '<strong>Microphone In Use</strong><br>';
+          errorMsg += 'Another application may be using the microphone.<br><br>';
+          errorMsg += '<strong>Check these apps:</strong><br>';
+          errorMsg += '? Zoom, Teams, Skype<br>';
+          errorMsg += '? Other browser tabs<br>';
+          errorMsg += '? Voice recorders<br>';
+          errorMsg += '? Camera apps<br><br>';
+          errorMsg += 'Close them and try again.<br><br>';
+          errorMsg += '<small>Error: ' + error.name + '</small>';
+        } else if (error.message.includes('not supported')) {
+          errorMsg += '<strong>Browser Not Supported</strong><br>';
+          errorMsg += error.message + '<br><br>';
+          errorMsg += 'Try using:<br>';
+          errorMsg += '? Google Chrome (latest version)<br>';
+          errorMsg += '? Microsoft Edge (latest version)<br>';
+        } else {
+          errorMsg += '<strong>Unknown Error</strong><br>';
+          errorMsg += 'Error name: ' + error.name + '<br>';
+          errorMsg += 'Message: ' + error.message + '<br><br>';
+          errorMsg += '<strong>Browser info:</strong><br>';
+          errorMsg += 'User Agent: ' + navigator.userAgent.substring(0, 100) + '...<br><br>';
+          errorMsg += 'Please try:<br>';
+          errorMsg += '? Reloading the page<br>';
+          errorMsg += '? Restarting your browser<br>';
+          errorMsg += '? Trying a different browser';
+        }
+        
+        showFeedback('Microphone Error', errorMsg);
+        cleanupRecording();
+      }
+    }
+
+    function stopRecording() {
+      if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
+        state.mediaRecorder.stop();
+      }
+      state.isRecording = false;
+    }
+
+    function cleanupRecording() {
+      state.isRecording = false;
+      recBtn.classList.remove('recording');
+      recBtn.textContent = '?? Record';
+      recordingViz.classList.remove('active');
+      
+      if (state.mediaStream) {
+        state.mediaStream.getTracks().forEach(track => track.stop());
+        state.mediaStream = null;
+      }
+    }
+
+    // Record button handler
+    recBtn.addEventListener('click', () => {
+      if (state.isRecording) {
+        stopRecording();
+      } else {
+        startRecording();
+      }
+    });
+
+    // Playback button handler
+    playbackBtn.addEventListener('click', () => {
+      if (state.recordedAudio) {
+        const audio = new Audio(state.recordedAudio);
+        audio.play();
+        showFeedback('Playing Back', '?? Playing your recording... Listen and compare to the target!');
+        
+        audio.onended = () => {
+          showFeedback('Playback Complete', 'How did you do? Press "Play Target" to hear the original again, or "Next" to continue.');
+        };
+      }
+    });
+
+    function showFeedback(title, message) {
+      feedback.innerHTML = `<div class="feedback-title">${title}</div>${message}`;
+    }
+
+    accentSelect.addEventListener('change', () => {
+      const accentName = accentSelect.options[accentSelect.selectedIndex].text;
+      showFeedback('Accent Changed', `Accent set to ${accentName}. Press "Play Target" to hear.`);
+    });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === ' ' && !state.isRecording) {
+        e.preventDefault();
+        playBtn.click();
+      }
+      if (e.key === 'r' || e.key === 'R') {
+        recBtn.click();
+      }
+      if (e.key === 'p' || e.key === 'P') {
+        if (!playbackBtn.disabled) {
+          playbackBtn.click();
+        }
+      }
+      if (e.key === 'n' || e.key === 'N') {
+        nextBtn.click();
+      }
+    });
+
+    // Clean up on page unload
+    window.addEventListener('beforeunload', () => {
+      cleanupRecording();
+      if (state.recordedAudio) {
+        URL.revokeObjectURL(state.recordedAudio);
+      }
+    });
+  </script>
+</body>
+</html>
